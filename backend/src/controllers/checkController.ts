@@ -70,9 +70,31 @@ export const createCheck = (req: Request, res: Response): void => {
   //
   // Instructions:
   // 1. Validate the request body using validateCheckRequest(req.body)
+  const validationErrors = validateCheckRequest(req.body)
   // 2. If there are validation errors, return a 400 status with ErrorResponse format
+  if (validationErrors.length > 0) {
+    const errorReponse: ErrorResponse = {
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'Invalid request',
+        details: validationErrors
+      }
+    }
+    res.status(400).json(errorReponse)
+    return
+  }
+
   // 3. If validation passes, call checkService.createCheck() with the appropriate data
+  const checkData: checkService.CreateCheckData = {
+    vehicleId: req.body.vehicleId,
+    odometerKm: req.body.odometerKm,
+    items: req.body.items,
+    ...(req.body.note !== undefined && { note: req.body.note })
+  }
+
+  const createdCheck = checkService.createCheck(checkData)
   // 4. Return a 201 status with the created check
+  res.status(201).json(createdCheck)
   //
   // Hint: Look at the getChecks controller below for reference on error handling
   // Hint: The checkService.createCheck expects CreateCheckData interface
