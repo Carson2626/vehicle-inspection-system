@@ -9,7 +9,14 @@
 import { Request, Response } from 'express'
 import * as checkService from '../services/checkService'
 import { validateCheckRequest } from '../validation'
-import { ErrorResponse } from '../types'
+import { ErrorResponse, CheckItem } from '../types'
+
+interface CheckControllerBody {
+  vehicleId: string
+  odometerKm: number
+  items: CheckItem[]
+  note?: string
+}
 
 /**
  * POST /checks
@@ -85,11 +92,13 @@ export const createCheck = (req: Request, res: Response): void => {
   }
 
   // 3. If validation passes, call checkService.createCheck() with the appropriate data
+  const { vehicleId, odometerKm, items, note } = req.body as CheckControllerBody
+
   const checkData: checkService.CreateCheckData = {
-    vehicleId: req.body.vehicleId,
-    odometerKm: req.body.odometerKm,
-    items: req.body.items,
-    ...(req.body.note !== undefined && { note: req.body.note })
+    vehicleId,
+    odometerKm,
+    items,
+    ...(note !== undefined && { note })
   }
 
   const createdCheck = checkService.createCheck(checkData)
