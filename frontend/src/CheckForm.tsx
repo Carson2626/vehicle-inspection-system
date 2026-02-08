@@ -6,6 +6,8 @@ import { useToast } from './useToast'
 
 const CHECK_ITEMS: CheckItemKey[] = ['TYRES', 'BRAKES', 'LIGHTS', 'OIL', 'COOLANT']
 
+const CHARS_LIMIT = 300
+
 interface Props {
   onSuccess: () => void
   // TODO: Add showToast prop to display toast notifications
@@ -69,7 +71,7 @@ export function CheckForm({ onSuccess }: Props) {
     }
   }
 
-  const remainingChars = 300 - note.length
+  const remainingChars = CHARS_LIMIT - note.length
 
   return (
     <>
@@ -83,7 +85,7 @@ export function CheckForm({ onSuccess }: Props) {
             <strong>Validation errors:</strong>
             <ul>
               {validationErrors.map((err, i) => (
-                <li key={i}>{err}</li>
+                <li key={`submit-vehicle-errors-${i}`}>{err}</li>
               ))}
             </ul>
           </div>
@@ -137,7 +139,7 @@ export function CheckForm({ onSuccess }: Props) {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             placeholder="Add any additional notes about the inspection..."
-            maxLength={300}
+            maxLength={CHARS_LIMIT}
             rows={4}
           ></textarea>
           <div className="character-counter">{remainingChars} characters remaining</div>

@@ -1,3 +1,5 @@
 /backend/node_modules
 /backend/coverage/
 /backend/dist
+.DS_Store
+**/.DS_Store
